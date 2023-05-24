@@ -30,7 +30,7 @@ The folder structure of this application is as follows:
 The following are the available API endpoints:
 
 - `/`: Handles test server in port 3000.
-- `/stats`: Handles all system and service metrics.
+- `/datasys`: Handles all system and service metrics.
 ## Contributing
 
 If you'd like to contribute to this project, please follow these steps:
