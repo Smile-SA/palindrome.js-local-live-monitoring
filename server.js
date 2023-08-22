@@ -25,102 +25,88 @@ app.get('/', (req, res) => {
 });
 
 let cpuUsageVal = 0;
-setInterval(function() {
-cpu.usage()
-  .then(response => {
-    cpuUsageVal=response;
-  })
-}, 1000);
 
 let totalSize = 0;
 let totalUsed = 0;
-df(function(error, response) {
-    if (error) { throw error; }
-    for (const drive of response) {
-        totalSize += drive.size;
-        totalUsed += drive.used;
-      }
-});
 
 let designedCapacity = 0;
 let maxCapacity = 0;
 let currentCapacity = 0;
 let capacityUnit = '';
-setInterval(function() {
-si.battery().then((bat) => {
-    designedCapacity = bat.designedCapacity;
-    maxCapacity = bat.maxCapacity;
-    currentCapacity = bat.currentCapacity
-    capacityUnit = bat.capacityUnit;
-  }).catch((err) => {
-    console.error(err);
-  });
-}, 1000);
 
-  let frequency = 0;
-  setInterval(function() {
-  si.wifiNetworks().then((wifi) => {
-    frequency = wifi[0].frequency || 0;
-  }).catch((err) => {
-    console.error(err);
-  });
-}, 1000);
+let frequency = 0;
 
-  let pixelDepth = 0;
-  setInterval(function() {
-  si.graphics().then((graphic) => {
-    pixelDepth = graphic.displays[0].pixelDepth;
-  }).catch((err) => {
-    console.error(err);
-  });
-}, 1000);
-  let cpuSpeed = 0;
-  let speedMin = 0;
-  let speedMax = 0;
-  setInterval(function() {
-  si.cpu().then((cpu) => {
-    cpuSpeed = cpu.speed;
-    speedMin = cpu.speedMin;
-    speedMax = cpu.speedMax;
-  }).catch((err) => {
-    console.error(err);
-  })
-}, 1000);
-  let cpuTemperature = 0;
-  let cpuTemperatureMin = 0;
-  let cpuTemperatureMax = 0;
+let cpuSpeed = 0;
+let speedMin = 0;
+let speedMax = 0;
 
-  setInterval(function() {
-  si.cpuTemperature().then((data) => {
-    cpuTemperature = Math.max(...data.cores);
-    cpuTemperatureMin = Math.min(...data.cores);;
-    cpuTemperatureMax = data.max;
-   }).catch((err) => {
-    console.error(err);
-  })
-}, 1000);
+let cpuTemperature = 0;
+let cpuTemperatureMin = 0;
+let cpuTemperatureMax = 0;
 
 let dataTransferred = 0;
 let dataReceived = 0;
-setInterval(function() {
-    si.networkStats().then(data => {
-      dataTransferred = data[0].tx_sec / 125;
-      dataReceived = data[0].rx_sec / 125;
-    })
-  }, 1000)
 
-  let rIO = 0;
-  let wIO = 0;
-  let tIO = 0;
-  setInterval(function() {
-    si.disksIO().then(data => {
-      rIO = data.rIO * Math.pow(10, -6);
-      wIO = data.wIO * Math.pow(10, -6);
-      tIO = data.tIO * Math.pow(10, -6);
-    });
-  }, 1000);
+let rIO = 0;
+let wIO = 0;
+let tIO = 0;
 
 app.get('/dataSys', async (req, res) => {
+
+  cpu.usage()
+    .then(response => {
+      cpuUsageVal=response;
+    })
+
+  df(function(error, response) {
+      if (error) { throw error; }
+      for (const drive of response) {
+          totalSize += drive.size;
+          totalUsed += drive.used;
+        }
+  });
+  
+  si.battery().then((bat) => {
+      designedCapacity = bat.designedCapacity;
+      maxCapacity = bat.maxCapacity;
+      currentCapacity = bat.currentCapacity
+      capacityUnit = bat.capacityUnit;
+    }).catch((err) => {
+      console.error(err);
+    });
+  
+    si.wifiNetworks().then((wifi) => {
+      frequency = wifi[0].frequency || 0;
+    }).catch((err) => {
+      console.error(err);
+    });
+
+    si.cpu().then((cpu) => {
+      cpuSpeed = cpu.speed;
+      speedMin = cpu.speedMin;
+      speedMax = cpu.speedMax;
+    }).catch((err) => {
+      console.error(err);
+    })
+
+    si.cpuTemperature().then((data) => {
+      cpuTemperature = Math.max(...data.cores);
+      cpuTemperatureMin = Math.min(...data.cores);;
+      cpuTemperatureMax = data.max;
+     }).catch((err) => {
+      console.error(err);
+    })
+
+      si.networkStats().then(data => {
+        dataTransferred = data[0].tx_sec / 125;
+        dataReceived = data[0].rx_sec / 125;
+      })
+
+      si.disksIO().then(data => {
+        rIO = data.rIO * Math.pow(10, -6);
+        wIO = data.wIO * Math.pow(10, -6);
+        tIO = data.tIO * Math.pow(10, -6);
+      });
 
   const localLiveMonitoring = {
 
@@ -145,20 +131,11 @@ app.get('/dataSys', async (req, res) => {
           "storage": {
               "label": "Storage",
               "unit": "GB",
-              "min": +((totalSize*0.02/1024/1024).toFixed(2)),
-              "med": +((totalSize/2/1024/1024).toFixed(2)),
-              "max": +((totalSize/1024/1024).toFixed(2)),
-              "current": +((totalUsed/1024/1024).toFixed(2))
+              "min": +((totalSize*0.02/1024/1024/1024).toFixed(2)),
+              "med": +((totalSize/2/1024/1024/1024).toFixed(2)),
+              "max": +((totalSize/1024/1024/1024).toFixed(2)),
+              "current": +((totalUsed/1024/1024/1024).toFixed(2))
           },
-          // the number of bits per pixel on a computer monitor to represent a specific color
-          /* "computer display": {
-              "label": "computer display",
-              "unit": "bits / pixel",
-              "min": 1,
-              "med": 16,
-              "max": 48,
-              "current": pixelDepth
-          }, */
           "ram": {
             "label": "RAM",
             "unit": "GB",
@@ -235,38 +212,13 @@ app.get('/dataSys', async (req, res) => {
           "max": wIO*3,
           "current": wIO
         },
-        /* "availability": {
-            "label": "availability",
-            "unit": "GB",
-            "min": 160,
-            "med": 640,
-            "max": 1280,
-            // "current": 480
-            "current": os.loadavg(5)*400
-        }, */
-        /* "inboundLatency": {
-            "label": "inboundLatency",
-            "unit": "GB",
-            "min": 120,
-            "med": 640,
-            "max": 1280,
-            "current": 620
-        },
-        "outboundLatency": {
-            "label": "outboundLatency",
-            "unit": "GB",
-            "min": 102,
-            "med": 512,
-            "max": 1024,
-            "current": 450
-        }, */
-        /*  "ioSpeed": {
-             "label": "ioSpeed",
-             "unit": "MB / seconds",
-             "min": os.processUptime().toFixed(2),
-             "med": os.processUptime().toFixed(2)*5,
-             "max": os.processUptime().toFixed(2)*10,
-             "current": os.processUptime().toFixed(2)*3
+         /* "ioSpeed": {
+          "label": "ioSpeed",
+          "unit": "MB / seconds",
+          "min": os.processUptime().toFixed(2),
+          "med": os.processUptime().toFixed(2)*5,
+          "max": os.processUptime().toFixed(2)*10,
+          "current": os.processUptime().toFixed(2)*3
         } */
       },
       "layer": {
