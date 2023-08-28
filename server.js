@@ -28,6 +28,7 @@ let cpuUsageVal = 0;
 
 let totalSize = 0;
 let totalUsed = 0;
+let currentStorage = 0;
 
 let designedCapacity = 0;
 let maxCapacity = 0;
@@ -64,6 +65,7 @@ app.get('/dataSys', async (req, res) => {
           totalSize += drive.size;
           totalUsed += drive.used;
         }
+        currentStorage = totalUsed*100/totalSize;
   });
   
   si.battery().then((bat) => {
@@ -134,7 +136,7 @@ app.get('/dataSys', async (req, res) => {
               "min": 2,
               "med": 50,
               "max": 100,
-              "current": (totalUsed*100/totalSize).toFixed(2)
+              "current": currentStorage
           },
           "ram": {
             "label": "RAM",
