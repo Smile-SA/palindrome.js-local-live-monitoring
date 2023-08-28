@@ -130,11 +130,11 @@ app.get('/dataSys', async (req, res) => {
           },
           "storage": {
               "label": "Storage",
-              "unit": "GB",
-              "min": +((totalSize*0.02/1024/1024/1024).toFixed(2)),
-              "med": +((totalSize/2/1024/1024/1024).toFixed(2)),
-              "max": +((totalSize/1024/1024/1024).toFixed(2)),
-              "current": +((totalUsed/1024/1024/1024).toFixed(2))
+              "unit": "%",
+              "min": 2,
+              "med": 50,
+              "max": 100,
+              "current": (totalUsed*100/totalSize).toFixed(2)
           },
           "ram": {
             "label": "RAM",
