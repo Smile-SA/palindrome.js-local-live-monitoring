@@ -30,16 +30,6 @@ If you'd like to contribute to this project, please follow these steps:
 4. Push your changes to your forked repository.
 5. Submit a pull request.
 
-## Comments
-
-If you have ideas or comments, please do not hesitate to contact me.
-
-Happy monitoring!
-
-Sincerely,
-
-- Sobhi Boughanmi.
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
@@ -48,5 +38,5 @@ This project is licensed under the [MIT License](LICENSE).
 - Rnd Team @ SMILE
 - Sobhi Boughanmi
 - JonRiv (author) @JonRiv
-- [systeminformation](https://www.npmjs.com/package/systeminformation): Lightweight collection of 50+ functions to retrieve detailed hardware, system and OS information, etc.
+- [systeminformation](https://www.npmjs.com/package/systeminformation)
 
